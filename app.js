@@ -5,7 +5,7 @@ import usersRouter from "./routes/users.js";
 import mongoose from 'mongoose';
 
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost/zenith');
+mongoose.connect(process.env.DATABASE_URL || 'mongodb://localhost/zenith');
 
 const app = express();
 
