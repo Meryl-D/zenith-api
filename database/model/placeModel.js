@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 //Define a schema for Places
-const placesSchema = new Schema({
+const placeSchema = new Schema({
     url_picture:{
         type: String,
         required: true,
@@ -27,3 +27,6 @@ const placesSchema = new Schema({
         default: Date.now
       }
   });
+
+  // Create a model
+  mongoose.model('Place', placeSchema);
