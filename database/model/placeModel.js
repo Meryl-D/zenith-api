@@ -11,22 +11,28 @@ const placeSchema = new Schema({
         type: String,
         required: true,
     },
-    description: // Nested array of documents
-    {
+    description: {
         type: String,
-        date: Date,
         minLenght: 2,
         maxLength: 200,
         required: true,
-
     },
-    publication_date: Date, 
-    visit_date: Date,
+    publication_date: {
+      type: Date,
+      default: Date.now
+    },
+    visit_date: {
+      type: Date
+    },
     modification_date: {
         type: Date,
         default: Date.now
-      }
-  });
+    },
+    private: {
+      type: Boolean,
+      default: true
+    }
+});
 
-  // Create a model
-  mongoose.model('Place', placeSchema);
+// Create a model
+mongoose.model('Place', placeSchema);
