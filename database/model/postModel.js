@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 //Define a schema for Places
-const placeSchema = new Schema({
+const postSchema = new Schema({
     url_picture:{
         type: String,
         required: true,
@@ -35,4 +35,4 @@ const placeSchema = new Schema({
 });
 
 // Create a model
-mongoose.model('Place', placeSchema);
+mongoose.model('Post', postSchema);
