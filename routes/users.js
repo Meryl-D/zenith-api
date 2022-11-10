@@ -22,7 +22,7 @@ usersRouter.post('/', function(req, res, next) {
 
 // Get a user by id route
 usersRouter.get("/:id", function (req, res, next) {
-  User.findById(id).exec(function(err, user) {
+  User.findById(req.params.id).exec(function(err, user) {
     if (err) {
       return next(err);
     }
