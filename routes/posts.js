@@ -1,7 +1,7 @@
 import express from "express";
 import Post from '../database/models/postModel.js';
 import Comment from '../database/models/commentModel.js';
-import resourceExists from "./resourceExists.js";
+import resourceExists from "./middleware/resourceMiddleware.js";
 
 const postsRouter = express.Router();
 

@@ -1,4 +1,4 @@
-import User from "../models/user";
+import User from '../../database/models/userModel.js';
 
 const secretKey = process.env.SECRET_KEY || "UqFj3LgP18YPI5Qc";
 
@@ -25,4 +25,9 @@ function authenticate(req, res, next) {
   });
 }
 
-export default authenticate;
+function authorize(req, res, next) {
+  if (req.userId != req.body.userId) return res.status(403).send("Unauthorized")
+  next()
+}
+
+export { authenticate, authorize }

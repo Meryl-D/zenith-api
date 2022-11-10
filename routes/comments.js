@@ -1,10 +1,11 @@
 import express from 'express';
 import Comment from '../database/models/commentModel.js';
-import resourceExists from "./resourceExists.js";
+import resourceExists from "./middleware/resourceMiddleware.js";
+import { authenticate, authorize } from './middleware/authMiddleware.js';
 
 const commentsRouter = express.Router();
 
-commentsRouter.patch('/:id', resourceExists(Comment), async function (req, res, next) {
+commentsRouter.patch('/:id', authenticate, authorize, resourceExists(Comment), async function (req, res, next) {
 
   req.body.modificationDate = new Date()
 
