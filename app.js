@@ -5,6 +5,7 @@ import indexRouter from "./routes/index.js";
 import usersRouter from "./routes/users.js";
 import postsRouter from "./routes/posts.js";
 import commentsRouter from "./routes/comments.js";
+import authRouter from "./routes/auth.js";
 
 mongoose.Promise = Promise;
 mongoose.connect(process.env.DATABASE_URL || 'mongodb://127.0.0.1/zenith');
@@ -15,10 +16,11 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/", indexRouter)
+app.use("/users", usersRouter)
 app.use("/comments", commentsRouter)
 app.use("/posts", postsRouter)
+app.use("/auth", authRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
