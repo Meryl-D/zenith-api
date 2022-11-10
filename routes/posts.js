@@ -7,10 +7,12 @@ const postsRouter = express.Router();
 
 /* GET posts listing. */
 postsRouter.get("/", function (req, res, next) {
+
   let query = Post.find()
   
+  query = query.where({visible: true}).or({_id: req.userId})
   query = query.populate('userId')
-  query = query.sort({creationDate: 'desc'})
+  query.sort({creationDate: 'desc'})
 
   query.exec(function (err, posts) {
     if (err) {
@@ -28,7 +30,7 @@ postsRouter.get('/:id/comments', resourceExists(Post), function (req, res, next)
   // Get comments only for the current post
   query = query.where('postId').equals(req.params.id)
   query = query.populate('postId').populate('userId')
-  query = query.sort({creationDate: 'desc'})
+  query.sort({creationDate: 'desc'})
 
   // Execute the query
   query.exec(function (err, comments) {
@@ -41,15 +43,17 @@ postsRouter.get('/:id/comments', resourceExists(Post), function (req, res, next)
 
 /* POST new post */
 postsRouter.post('/', function (req, res, next) {
+
+  req.body.userId = req.userId
   // Create a new document from the JSON in the request body
-  const newPost = new Post(req.body);
+  const newPost = new Post(req.body)
   // Save that document
   newPost.save(function (err, savedPost) {
     if (err) {
-      return next(err);
+      return next(err)
     }
     // Send the saved document in the response
-    res.send(savedPost);
+    res.send(savedPost)
   });
 });
 
