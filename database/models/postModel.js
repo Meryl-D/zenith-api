@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
-const User = mongoose.model('User', userSchema);
+import User from './userModel.js';
 
 //Define a schema for Places
 const postSchema = new Schema({

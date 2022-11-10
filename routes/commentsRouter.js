@@ -29,18 +29,13 @@ commentsRouter.post('/', function (req, res, next) {
 });
 
 commentsRouter.patch('/:id', function (req, res, next) {
-  Comment.findById(req.params.id).exec(function (err, comment) {
-    if (err) {
-      return next(err)
-    }
 
-    Comment.findByIdAndUpdate(req.params.id, req.body, { new: true }).then((comment) => {
-      if (!comment) return res.status(404).send()
-      res.send(comment)
+  Comment.findByIdAndUpdate(req.params.id, req.body, { new: true }).then((comment) => {
+    if (!comment) return res.status(404).send()
+    res.send(comment)
 
-    }).catch((err) => {
-      res.status(500).send(err);
-    })
+  }).catch((err) => {
+    res.status(500).send(err);
   })
 })
 
