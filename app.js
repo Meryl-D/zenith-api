@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import commentsRouter from "./routes/commentsRouter.js";
 
 mongoose.Promise = Promise;
-mongoose.connect(process.env.DATABASE_URL  || 'mongodb://127.0.0.1/zenith');
+mongoose.connect(process.env.DATABASE_URL || 'mongodb://127.0.0.1/zenith');
 
 const app = express();
 
