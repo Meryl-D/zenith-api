@@ -1,22 +1,33 @@
 import express from "express";
 import User from '../database/models/userModel.js';
+import bcrypt from "bcrypt";
 const usersRouter = express.Router();
 
 usersRouter.get("/", function (req, res, next) {
   res.send("Got a response from the users route");
 });
 
+
 // add a user route
-usersRouter.post('/', function(req, res, next) {
-  // Create a new document from the JSON in the request body
-  const newUser = new User(req.body);
-  // Save that document
-  newUser.save(function(err, savedUser) {
+usersRouter.post("/", function(req, res, next) {
+  // create hashedPassword
+  const plainPassword = req.body.password;
+  const costFactor = 10;
+  bcrypt.hash(plainPassword, costFactor, function(err, hashedPassword) {
     if (err) {
       return next(err);
     }
-    // Send the saved document in the response
-    res.send(savedUser);
+    // Create a new document from the JSON in the request body
+    const newUser = new User(req.body);
+    newUser.password = hashedPassword;
+      // Save that document
+    newUser.save(function(err, savedUser) {
+      if (err) {
+        return next(err);
+      }
+          // Send the saved document in the response
+      res.send(savedUser);
+    });
   });
 });
 
