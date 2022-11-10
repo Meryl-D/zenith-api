@@ -18,20 +18,20 @@ const postSchema = new Schema({
         maxLength: 200,
         required: true,
     },
-    publicationDate: {
+    creationDate: {
       type: Date,
-      default: Date.now
+      default: new Date()
     },
     visitDate: {
       type: Date
     },
     modificationDate: {
         type: Date,
-        default: Date.now
+        default: new Date()
     },
     visible: {
       type: Boolean,
-      default: true
+      default: false
     },
     userId: {
       type: Schema.Types.ObjectId,
