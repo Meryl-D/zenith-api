@@ -4,7 +4,7 @@ import User from './userModel.js';
 
 //Define a schema for Places
 const postSchema = new Schema({
-    url_picture:{
+    urlPicture:{
         type: String,
         required: true,
     }, 
@@ -18,14 +18,14 @@ const postSchema = new Schema({
         maxLength: 200,
         required: true,
     },
-    publication_date: {
+    publicationDate: {
       type: Date,
       default: Date.now
     },
-    visit_date: {
+    visitDate: {
       type: Date
     },
-    modification_date: {
+    modificationDate: {
         type: Date,
         default: Date.now
     },
