@@ -7,7 +7,6 @@ usersRouter.get("/", function (req, res, next) {
   res.send("Got a response from the users route");
 });
 
-
 // add a user route
 usersRouter.post("/", function(req, res, next) {
   // create hashedPassword
