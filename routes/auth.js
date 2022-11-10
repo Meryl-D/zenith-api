@@ -1,15 +1,16 @@
 import express from 'express';
 import bcrypt from "bcrypt";
-import User from "../database/models/userModel.js";
+import User from '../database/models/userModel.js';
 import jwt from "jsonwebtoken";
 import { authenticate } from "./middleware/authMiddleware.js";
 
 const secretKey = process.env.SECRET_KEY || "UqFj3LgP18YPI5Qc";
 
 const authRouter = express.Router();
+
 /* GET Authentification */
 authRouter.get('/', function (req, res, next) {
-    res.send('Login');
+    res.send('login');
 })
 
 // login route

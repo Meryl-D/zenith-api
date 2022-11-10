@@ -1,4 +1,4 @@
-import User from '../../database/models/userModel.js';
+import User from "../../database/models/userModel.js"
 
 const secretKey = process.env.SECRET_KEY || "UqFj3LgP18YPI5Qc";
 
@@ -19,7 +19,7 @@ function authenticate(req, res, next) {
     if (err) {
       return res.status(401).send("Your token is invalid or has expired");
     } else {
-      req.currentUserId = payload.sub;
+      req.User._id = payload.sub;
       next(); // Pass the ID of the authenticated user to the next middleware.
     }
   });
