@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
+const User = mongoose.model('User', userSchema);
 
 //Define a schema for Places
 const postSchema = new Schema({
@@ -28,9 +29,13 @@ const postSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    private: {
+    visible: {
       type: Boolean,
       default: true
+    },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
     }
 });
 
