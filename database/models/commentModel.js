@@ -13,10 +13,11 @@ const commentSchema = new Schema({
   },
   creationDate: {
     type: Date,
+    default : new Date()
   },
   modificationDate: {
     type: Date,
-    default: Date.now
+    default: new Date()
   },
   userId: {
     type: Schema.Types.ObjectId,
