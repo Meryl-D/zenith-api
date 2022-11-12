@@ -26,7 +26,7 @@ function authenticate(req, res, next) {
 }
 
 function authorize(req, res, next) {
-  if (req.userId != req.body.userId) return res.status(403).send("Unauthorized")
+  if (req.userId != req.body.userId) return res.status(403).send("You are not allowed to access this resource")
   next()
 }
 

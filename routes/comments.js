@@ -24,7 +24,7 @@ commentsRouter.delete('/:id', resourceExists(Comment), async function (req, res,
 
   try {
     const DeletedComment = await Comment.findByIdAndDelete(req.params.id)
-    res.send("Comment deleted successfully!")
+    res.send(DeletedComment)
   
   } catch(err) {
     res.status(500).send(err)
