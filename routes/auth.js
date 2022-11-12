@@ -39,6 +39,7 @@ authRouter.post("/", function (req, res, next) {
             jwt.sign(payload, secretKey, function (err, token) {
                 if (err) { return next(err); }
                 res.send({ token: token }); // Send the token to the client.
+                console.log(token)
             });
         });
     })
