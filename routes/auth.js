@@ -16,14 +16,14 @@ authRouter.get('/', function (req, res, next) {
 // login route
 authRouter.post("/", function (req, res, next) {
     // search for user in database
-    User.findOne({username: req.body.username }).exec(function (err, user) {
+    User.findOne({ username: req.body.username }).exec(function (err, user) {
         console.log(user)
         if (err) {
             return next(err);
         } else if (!user) {
             return res.sendStatus(401);
         }
-            // compare password
+        // compare password
         bcrypt.compare(req.body.password, user.password, function (err, valid) {
             if (err) {
                 return next(err);
@@ -31,7 +31,7 @@ authRouter.post("/", function (req, res, next) {
                 return res.sendStatus(401);
             }
             // Login is valid...
-            res.send(`Welcome ${user.username}!`);
+            // res.send(`Welcome ${user.username}!`);
 
             // Generate a valid JWT which expires in 7 days.
             const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 3600;

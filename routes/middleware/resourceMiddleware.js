@@ -7,11 +7,19 @@ function resourceExists(model) {
         modelName = modelName[0].toUpperCase() + modelName.slice(1, -1)
         // verify if param is a valid object id
         if (!mongoose.isValidObjectId(req.params.id)) return res.status(404).send(`${modelName} not found`)
-        // verify if resource exists
-        if (!await model.exists({ _id: req.params.id })) return res.status(404).send(`${modelName} not found`)
 
-        next()
+        try {
+            // verify if resource exists
+            const inst = await model.findById(req.params.id)
+            if (!inst) return res.status(404).send(`${modelName} not found`)
+            // add resource user id for later authorization
+            req.resourceUserId = inst.userId
+            next()
+
+        } catch(err) {
+            res.status(500).send(err)
+        }
     }
 }
 
-export  default resourceExists
+export default resourceExists

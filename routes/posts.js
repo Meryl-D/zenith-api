@@ -5,15 +5,17 @@ import Post from '../database/models/postModel.js';
 import Comment from '../database/models/commentModel.js';
 import resourceExists from "./middleware/resourceMiddleware.js";
 import upload from "./middleware/imageMiddleware.js"
+import { authenticate, authorize } from './middleware/authMiddleware.js';
 
 const postsRouter = express.Router()
 // const upload = multer({ dest: 'uploads/' })
 
 /* GET posts listing. */
-postsRouter.get("/", function (req, res, next) {
+postsRouter.get("/", authenticate, function (req, res, next) {
 
   let query = Post.find()
 
+  // Filter comments that are either the users own or set to visible by others
   query = query.where({ visible: true }).or({ _id: req.userId })
   query = query.populate('userId')
   query.sort({ creationDate: 'desc' })
@@ -27,11 +29,11 @@ postsRouter.get("/", function (req, res, next) {
 })
 
 /* GET comments listing for a post */
-postsRouter.get('/:id/comments', resourceExists(Post), function (req, res, next) {
+postsRouter.get('/:id/comments', resourceExists(Post), authenticate, function (req, res, next) {
 
   let query = Comment.find()
 
-  // Get comments only for the current post
+  // Filter comments only for the current post
   query = query.where('postId').equals(req.params.id)
   query = query.populate('postId').populate('userId')
   query.sort({ creationDate: 'desc' })
@@ -46,7 +48,7 @@ postsRouter.get('/:id/comments', resourceExists(Post), function (req, res, next)
 })
 
 /* POST a new post */
-postsRouter.post('/', upload.single('picture'), async function (req, res, next) {
+postsRouter.post('/', upload.single('picture'), authenticate, function (req, res, next) {
 
   // req.body.userId = req.userId
   req.body.userId = '636a28c0c465e03b87a28ccd'
@@ -65,7 +67,7 @@ postsRouter.post('/', upload.single('picture'), async function (req, res, next) 
 });
 
 /* POST a new comment for a specific post */
-postsRouter.post('/:id/comments', resourceExists(Post), function (req, res, next) {
+postsRouter.post('/:id/comments', resourceExists(Post), authenticate, function (req, res, next) {
 
   req.body.userId = req.userId
   req.body.postId = req.params.id
@@ -83,7 +85,7 @@ postsRouter.post('/:id/comments', resourceExists(Post), function (req, res, next
   });
 });
 
-postsRouter.patch("/:id", resourceExists(Post), async function (req, res, next) {
+postsRouter.patch("/:id", resourceExists(Post), authenticate, authorize, async function (req, res, next) {
 
   req.body.modificationDate = new Date()
 
@@ -98,7 +100,7 @@ postsRouter.patch("/:id", resourceExists(Post), async function (req, res, next) 
   }
 });
 
-postsRouter.delete("/:id", resourceExists(Post), async function (req, res, next) {
+postsRouter.delete("/:id", resourceExists(Post),  authenticate, authorize, async function (req, res, next) {
   try {
     // delete all the comments of the post first
     await Comment.deleteMany({ postId: req.params.id })
