@@ -50,8 +50,7 @@ postsRouter.get('/:id/comments', resourceExists(Post), authenticate, function (r
 /* POST a new post */
 postsRouter.post('/', upload.single('picture'), authenticate, function (req, res, next) {
 
-  // req.body.userId = req.userId
-  req.body.userId = '636a28c0c465e03b87a28ccd'
+  req.body.userId = req.currentUserId
   // Create file path
   req.body.pictureUrl = new URL(`uploads/${req.file.filename}`, import.meta.url)
   // Create a new document from the JSON in the request body
@@ -69,7 +68,7 @@ postsRouter.post('/', upload.single('picture'), authenticate, function (req, res
 /* POST a new comment for a specific post */
 postsRouter.post('/:id/comments', resourceExists(Post), authenticate, function (req, res, next) {
 
-  req.body.userId = req.userId
+  req.body.userId = req.currentUserId
   req.body.postId = req.params.id
   // req.body.userId = '636a28c0c465e03b87a28ccd'
 
