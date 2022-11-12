@@ -23,25 +23,24 @@ authRouter.post("/", function (req, res, next) {
         } else if (!user) {
             return res.sendStatus(401);
         }
-        res.send(user)
-        // compare password
-        // bcrypt.compare(req.body.password, user.password, function (err, valid) {
-        //     if (err) {
-        //         return next(err);
-        //     } else if (!valid) {
-        //         return res.sendStatus(401);
-        //     }
-        //     // Login is valid...
-        //     res.send(`Welcome ${user.username}!`);
+            // compare password
+        bcrypt.compare(req.body.password, user.password, function (err, valid) {
+            if (err) {
+                return next(err);
+            } else if (!valid) {
+                return res.sendStatus(401);
+            }
+            // Login is valid...
+            res.send(`Welcome ${user.username}!`);
 
-        //     // Generate a valid JWT which expires in 7 days.
-        //     const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 3600;
-        //     const payload = { sub: user._id.toString(), exp: exp };
-        //     jwt.sign(payload, secretKey, function (err, token) {
-        //         if (err) { return next(err); }
-        //         res.send({ token: token }); // Send the token to the client.
-        //     });
-        // });
+            // Generate a valid JWT which expires in 7 days.
+            const exp = Math.floor(Date.now() / 1000) + 7 * 24 * 3600;
+            const payload = { sub: user._id.toString(), exp: exp };
+            jwt.sign(payload, secretKey, function (err, token) {
+                if (err) { return next(err); }
+                res.send({ token: token }); // Send the token to the client.
+            });
+        });
     })
 })
 
