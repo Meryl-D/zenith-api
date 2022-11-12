@@ -1,0 +1,5 @@
+openapi: 3.0.3
+info:
+  description: "This API is awesome."
+  version: "1.0.0"
+  title: "Awesome API"
