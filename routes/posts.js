@@ -1,5 +1,5 @@
 import express from "express";
-// import * as fs from 'fs';
+import * as fs from 'fs';
 import multer from "multer";
 import Post from '../database/models/postModel.js';
 import Comment from '../database/models/commentModel.js';
@@ -8,7 +8,6 @@ import { upload } from "./middleware/imageMiddleware.js"
 import { authenticate, authorize } from './middleware/authMiddleware.js';
 
 const postsRouter = express.Router()
-// const upload = multer({ dest: 'uploads/' })
 
 /* GET posts listing. */
 postsRouter.get("/", authenticate, function (req, res, next) {
@@ -51,13 +50,16 @@ postsRouter.get('/:id/comments', resourceExists(Post), authenticate, function (r
 postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'), function (req, res, next) {
 
   if (req.fileFormatError) return res.send(req.fileFormatError);
-
   req.body._id = req.resourceId
   req.body.userId = req.currentUserId
+
   // Create file path
   if (req.file) {
-    req.body.picture.url = new URL(`uploads/${req.file.filename}`, import.meta.url)
-    req.body.picture.ext = req.ext
+    const ext = req.file.mimetype.split('/')
+    req.body.picture = {
+      url: new URL(`../uploads/${req.file.filename}`, import.meta.url),
+      ext: ext[1]
+    }
   }
   // Create a new document from the JSON in the request body
   const newPost = new Post(req.body)
@@ -96,8 +98,11 @@ postsRouter.patch("/:id", resourceExists(Post), authenticate, authorize, checkRe
       req.body.modificationDate = new Date()
 
       if (req.file) {
-        req.body.picture.url = new URL(`uploads/${req.file.filename}`, import.meta.url)
-        req.body.picture.ext = req.file.ext
+        const ext = req.file.mimetype.split('/')
+        req.body.picture = {
+          url: new URL(`../uploads/${req.file.filename}`, import.meta.url),
+          ext: ext[1]
+        }
       }
       const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true })
 
@@ -113,14 +118,17 @@ postsRouter.delete("/:id", resourceExists(Post), authenticate, authorize, async 
   try {
     // delete all the comments of the post first
     await Comment.deleteMany({ postId: req.params.id })
-
-    // const picturePath = `./uploads/${}`
-    // fs.exists(filePath, function (exists) {
-    //   if (exists) fs.unlinkSync(filePath)
-    // })
+    
     // then delete the post itself
-    const DeletedPost = await Post.findByIdAndDelete(req.params.id)
-    res.send(DeletedPost)
+    const deletedPost = await Post.findByIdAndDelete(req.params.id)
+
+    // finally delete the posts image
+    const filePath = new URL(`../uploads/zenith_${req.params.id}.${deletedPost.picture.ext}`, import.meta.url)
+    fs.exists(filePath, function (exists) {
+      if (exists) fs.unlinkSync(filePath)
+    })
+
+    res.send(deletedPost)
 
   } catch (err) {
     res.status(500).send(err)
