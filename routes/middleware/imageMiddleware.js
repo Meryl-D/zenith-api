@@ -1,14 +1,28 @@
+import mongoose from "mongoose";
 import multer from "multer";
 
-const storage = multer.diskStorage({
+const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, `uploads`)
     },
     filename: (req, file, cb) => {
-        cb(null, `zenith_${file.originalname}`)
+        const ext = file.mimetype.split('/')
+        cb(null, `zenith_${req.resourceId}.${ext[1]}`)
     }
 });
 
-const upload = multer({ storage: storage })
+const multerFilter = function (req, file, cb) {
+    // Check file format
+    if (file.mimetype !== 'image/png' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/jpg') {
+        req.fileFormatError = 'Invalid file format';
+        return cb(null, false, new Error('Invalid file format'));
+    }
+    cb(null, true)
+}
 
-export default upload
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter
+})
+
+export { upload }

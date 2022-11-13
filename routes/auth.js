@@ -17,7 +17,6 @@ authRouter.get('/', function (req, res, next) {
 authRouter.post("/", function (req, res, next) {
     // search for user in database
     User.findOne({ username: req.body.username }).exec(function (err, user) {
-        console.log(user)
         if (err) {
             return next(err);
         } else if (!user) {

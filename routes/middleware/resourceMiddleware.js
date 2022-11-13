@@ -22,4 +22,15 @@ function resourceExists(model) {
     }
 }
 
-export default resourceExists
+function checkResourceId(req, res, next) {
+    // check if ID already exists. If it doesn't create a new one
+    if (req?.params?.id) {
+        console.log('was here')
+        req.resourceId = req.params.id
+    } else {
+        req.resourceId = new mongoose.Types.ObjectId()
+    }
+    next()
+}
+
+export { resourceExists, checkResourceId }

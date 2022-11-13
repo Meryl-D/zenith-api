@@ -10,12 +10,12 @@ const postSchema = new Schema({
   location: {
     type: {
       type: String,
-      required: true,
+      // required: true,
       enum: ['Point']
     },
     coordinates: {
       type: [Number],
-      required: true,
+      // required: true,
       validate: {
         validator: validateGeoJsonCoordinates,
         message: '{VALUE} is not a valid longitude/latitude(/altitude) coordinates array'
@@ -26,7 +26,7 @@ const postSchema = new Schema({
     type: String,
     minLenght: [2, 'Description is too short'],
     maxLength: [200, 'Description cannot exceed 200 characters'],
-    required: true,
+    // required: true,
   },
   creationDate: {
     type: Date,

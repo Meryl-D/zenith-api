@@ -1,6 +1,6 @@
 import express from 'express';
 import Comment from '../database/models/commentModel.js';
-import resourceExists from "./middleware/resourceMiddleware.js";
+import { resourceExists } from "./middleware/resourceMiddleware.js";
 import { authenticate, authorize } from './middleware/authMiddleware.js';
 
 const commentsRouter = express.Router();
