@@ -13,7 +13,11 @@ function resourceExists(model) {
             const inst = await model.findById(req.params.id)
             if (!inst) return res.status(404).send(`${modelName} not found`)
             // add resource user id for later authorization
-            req.resourceUserId = inst.userId
+            if (modelName != 'User') {
+                req.resourceUserId = inst.userId
+            } else {
+                req.resourceUserId = req.params.id
+            }
             next()
 
         } catch(err) {

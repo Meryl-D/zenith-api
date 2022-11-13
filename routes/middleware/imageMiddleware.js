@@ -7,6 +7,9 @@ const multerStorage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         const ext = file.mimetype.split('/')
+        console.log(ext[1])
+        req.ext = ext[1]
+        // Use post ID in the name so its unique and automatically replaced when the user changes the posts picture
         cb(null, `zenith_${req.resourceId}.${ext[1]}`)
     }
 });

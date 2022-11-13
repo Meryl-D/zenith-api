@@ -50,12 +50,15 @@ postsRouter.get('/:id/comments', resourceExists(Post), authenticate, function (r
 /* POST a new post */
 postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'), function (req, res, next) {
 
-  if(req.fileFormatError) return res.send(req.fileFormatError);
+  if (req.fileFormatError) return res.send(req.fileFormatError);
 
   req.body._id = req.resourceId
   req.body.userId = req.currentUserId
   // Create file path
-  if(req.file) req.body.pictureUrl = new URL(`uploads/${req.file.filename}`, import.meta.url)
+  if (req.file) {
+    req.body.picture.url = new URL(`uploads/${req.file.filename}`, import.meta.url)
+    req.body.picture.ext = req.ext
+  }
   // Create a new document from the JSON in the request body
   const newPost = new Post(req.body)
   // Save that document
@@ -88,25 +91,33 @@ postsRouter.post('/:id/comments', resourceExists(Post), authenticate, function (
 });
 
 postsRouter.patch("/:id", resourceExists(Post), authenticate, authorize, checkResourceId, upload.single('picture'),
-async function (req, res, next) {
-  try {
-    req.body.modificationDate = new Date()
-    if(req.file) req.body.pictureUrl = new URL(`uploads/${req.file.filename}`, import.meta.url)
+  async function (req, res, next) {
+    try {
+      req.body.modificationDate = new Date()
 
-    const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true })
+      if (req.file) {
+        req.body.picture.url = new URL(`uploads/${req.file.filename}`, import.meta.url)
+        req.body.picture.ext = req.file.ext
+      }
+      const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true })
 
-    if (!updatedPost) res.status(404).send('Updated post not found')
-    res.send(updatedPost)
+      if (!updatedPost) res.status(404).send('Updated post not found')
+      res.send(updatedPost)
 
-  } catch (err) {
-    res.status(500).send(err)
-  }
-});
+    } catch (err) {
+      res.status(500).send(err)
+    }
+  });
 
 postsRouter.delete("/:id", resourceExists(Post), authenticate, authorize, async function (req, res, next) {
   try {
     // delete all the comments of the post first
     await Comment.deleteMany({ postId: req.params.id })
+
+    // const picturePath = `./uploads/${}`
+    // fs.exists(filePath, function (exists) {
+    //   if (exists) fs.unlinkSync(filePath)
+    // })
     // then delete the post itself
     const DeletedPost = await Post.findByIdAndDelete(req.params.id)
     res.send(DeletedPost)

@@ -4,8 +4,13 @@ import User from './userModel.js';
 
 //Define a schema for Posts
 const postSchema = new Schema({
-  pictureUrl: {
-    type: String,
+  picture: {
+    url: {
+      type: String,
+    },
+    ext: {
+      type: String
+    }
   },
   location: {
     type: {
