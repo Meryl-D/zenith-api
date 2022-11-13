@@ -1,13 +1,16 @@
 import express from "express";
 import User from '../database/models/userModel.js';
 import bcrypt from "bcrypt";
+import { resourceExists } from "./middleware/resourceMiddleware.js";
+import { authenticate, authorize } from './middleware/authMiddleware.js';
+
 const usersRouter = express.Router();
 
 usersRouter.get("/", function (req, res, next) {
   res.send("Got a response from the users route");
 });
 
-// add a user route
+// add a user to the database
 usersRouter.post("/", function(req, res, next) {
   // create hashedPassword
   const plainPassword = req.body.password;
@@ -30,7 +33,7 @@ usersRouter.post("/", function(req, res, next) {
   });
 });
 
-// Get a user by id route
+// Get a user by id 
 usersRouter.get("/:id", function (req, res, next) {
   User.findById(req.params.id).exec(function(err, user) {
     if (err) {
@@ -40,10 +43,31 @@ usersRouter.get("/:id", function (req, res, next) {
   });
 });
 
-// modify a user route
-usersRouter.put("/:id" /*...*/);
+// modify a user 
+usersRouter.patch('/:id', resourceExists(User), authenticate, authorize, async function (req, res, next) {
 
-// delete a user route
-usersRouter.delete("/:id" /*...*/);
+  try {
+    // Update an entry for a selected user
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    // Send the updated user in the response if the user id is valid
+    if (!updatedUser) res.status(404).send('User not found')
+    res.send(updatedUser)
+  
+  } catch(err) {
+    res.status(500).send(err)
+  }
+})
+
+// delete a user 
+usersRouter.delete('/:id', resourceExists(User), authenticate, authorize, async function (req, res, next) {
+
+  try {
+    const DeletedUser = await User.findByIdAndDelete(req.params.id)
+    res.send(DeletedUser)
+  
+  } catch(err) {
+    res.status(500).send(err)
+  }
+})
 
 export default usersRouter;
