@@ -1,7 +1,7 @@
 import express from "express";
 import User from '../database/models/userModel.js';
 import bcrypt from "bcrypt";
-import { resourceExists } from "./middleware/resourceMiddleware.js";
+import { resourceExists, checkResourceId } from "./middleware/resourceMiddleware.js";
 import { authenticate, authorize } from './middleware/authMiddleware.js';
 
 const usersRouter = express.Router();
@@ -44,7 +44,7 @@ usersRouter.get("/:id", function (req, res, next) {
 });
 
 // modify a user 
-usersRouter.patch('/:id', resourceExists(User), authenticate, authorize, async function (req, res, next) {
+usersRouter.patch('/:id', resourceExists(User) , authenticate, authorize, async function (req, res, next) {
 
   try {
     // Update an entry for a selected user
