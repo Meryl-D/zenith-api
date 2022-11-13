@@ -1,5 +1,293 @@
+#swagger: "2.0"
 openapi: 3.0.3
 info:
-  description: "This API is awesome."
-  version: "1.0.0"
-  title: "Awesome API"
+  title: Swagger Zenith - OpenAPI 3.0
+  description: |-
+    This is a sample Travel Journal Server based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io). This is the first version of our API, please be kind with our mistakes, we are newbies. („• ᴗ •„)
+    
+    You can now help us improve the API whether it's by making changes to the definition itself or to the code.
+    That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
+    
+    Some useful links:
+    - [The project's repository](https://github.com/Meryl-D/zenith)
+    - [The source API definition for the project](https://github.com/Meryl-D/zenith/blob/main/openapi.yml)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: zenith@heig-vd.ch
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: comment
+    description: Everything about comments
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+  - name: user
+    description: Operations about user
+  - name: post
+    description: Publications that users post on Zenith
+  - name: auth
+    description: Authentification
+paths:
+  /comments:
+    patch:
+      tags:
+        - comment
+      summary: Update an existing comment
+      description: Update an existing comment by Id
+      operationId: updateComment
+      requestBody:
+        description: Update an existent comment under a post
+        content:
+          application/json:
+            schema:
+              $ref: '#'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Comment not found
+        '405':
+          description: Validation exception
+    delete:
+      tags:
+        - comment
+      summary: Delete a comment under a post
+      description: Update an existing pet by Id
+      operationId: deleteComment
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#'          
+  /users/{userId}:
+    get:
+      tags:
+        - user
+      summary: Get a user by user id
+      description: Get a user by user id
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          description: ID of user to reach
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#'   
+    post:
+      tags:
+        - user
+      summary: Post a user
+      description: Post a user
+      operationId: postUser
+      parameters:
+        - name: userId
+          in: path
+          description: ID of user to reach
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#'   
+    patch:
+      tags:
+        - user
+      summary: Update users info
+      description: Get a user by user id
+      operationId: patchUser
+      parameters:
+        - name: userId
+          in: path
+          description: ID of user to reach
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#'   
+    delete:
+      tags:
+        - user
+      summary: Delete a user
+      description: Delete a user by user ID
+      operationId: deleteUser
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#' 
+      parameters:
+        - name: userId
+          in: path
+          description: ID of user to reach
+          required: true
+          schema:
+            type: integer
+            format: int64
+  /posts/{postId}:
+    get:
+      tags:
+        - post
+      summary: Get a post
+      description: Get a post by post id
+      operationId: getPostById
+      parameters:
+        - name: postId
+          in: path
+          description: ID of user to reach
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#'   
+    post:
+      tags:
+        - post
+      summary: Post a new post
+      description: Post a new post on the map
+      operationId: postPost
+      parameters:
+        - name: postId
+          in: path
+          description: ID of user to reach
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#'   
+    patch:
+      tags:
+        - post
+      summary: Partially modify posts infos
+      description: Get a user by user id
+      operationId: patchPost
+      parameters:
+        - name: postId
+          in: path
+          description: ID of user to reach
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#'   
+    delete:
+      tags:
+        - post
+      summary: Delete a post
+      description: Delete a post by user ID
+      operationId: deletePost
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#' 
+      parameters:
+        - name: postId
+          in: path
+          description: ID of user to reach
+          required: true
+          schema:
+            type: integer
+            format: int64
+  /auth/login:
+    get:
+      tags:
+        - auth
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: false
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/xml:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+                
