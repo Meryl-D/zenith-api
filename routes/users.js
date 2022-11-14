@@ -1,6 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import User from '../database/models/userModel.js';
+import Post from '../database/models/postModel.js';
+import Comment from '../database/models/commentModel.js';
 import bcrypt from "bcrypt";
 import { resourceExists } from "./middleware/resourceMiddleware.js";
 import { authenticate, authorize } from './middleware/authMiddleware.js';
@@ -87,8 +89,17 @@ usersRouter.patch('/:id', resourceExists(User) , authenticate, authorize, async 
 usersRouter.delete('/:id', resourceExists(User), authenticate, authorize, async function (req, res, next) {
 
   try {
-    const DeletedUser = await User.findByIdAndDelete(req.params.id)
-    res.send(DeletedUser)
+    // first find all posts related to the user to delete
+    const relatedPosts = await Post.find({ userId: req.params.id })
+    // delete all comments related to the posts
+    for (const post of relatedPosts) {
+      await Comment.deleteMany({postId: post.id})
+    }
+    // then delete the posts
+    await Post.deleteMany({userId: req.params.id})
+    // finally delete the user
+    const deletedUser = await User.findByIdAndDelete(req.params.id)
+    res.send(deletedUser)
   
   } catch(err) {
     res.status(500).send(err)

@@ -22,7 +22,6 @@ postsRouter.get("/", authenticate, function (req, res, next) {
     query = query.or([{ visible: true }, { userId: req.currentUserId }])
   }
   if (req.query?.from && req.query?.to) {
-    console.log('date query')
     const from = new Date(`${req.query.from}T00:00:00`)
     const to = new Date(`${req.query.to}T23:59:59`)
     query = query.where('visitDate').gte(from).lte(to)
@@ -45,7 +44,7 @@ postsRouter.get('/:id/comments', resourceExists(Post), authenticate, function (r
 
   // Filter comments only for the current post
   query = query.where('postId').equals(req.params.id)
-  query = query.populate('postId').populate('userId')
+  query = query.populate('userId')
   query.sort({ creationDate: 'desc' })
 
   // Execute the query
@@ -63,6 +62,7 @@ postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'), f
   if (req.fileFormatError) return res.send(req.fileFormatError);
   req.body._id = req.resourceId
   req.body.userId = req.currentUserId
+  req.body.visitDate = new Date(req.body.visitDate)
 
   // Create file path
   if (req.file) {
@@ -89,7 +89,7 @@ postsRouter.post('/:id/comments', resourceExists(Post), authenticate, function (
 
   req.body.userId = req.currentUserId
   req.body.postId = req.params.id
-  // req.body.userId = '636a28c0c465e03b87a28ccd'
+  req.body.visitDate = new Date(req.body.visitDate)
 
   // Create a new document from the JSON in the request body
   const newComment = new Comment(req.body);
