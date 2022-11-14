@@ -35,14 +35,19 @@ const postSchema = new Schema({
   },
   creationDate: {
     type: Date,
-    default: new Date()
+    default: Date.now
   },
   visitDate: {
-    type: Date
+    type: Date,
+    min: '1950-01-01',
+    validate: {
+      validator: validateMaxDate,
+      message: 'Visit Date cannot be after today'
+    }
   },
   modificationDate: {
     type: Date,
-    default: new Date()
+    default: Date.now
   },
   visible: {
     type: Boolean,
@@ -68,6 +73,10 @@ function isLatitude(value) {
 
 function isLongitude(value) {
   return value >= -180 && value <= 180;
+}
+
+function validateMaxDate(value) {
+  return value < new Date()
 }
 
 // Create a model

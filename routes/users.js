@@ -1,7 +1,10 @@
 import express from "express";
+import mongoose from "mongoose";
 import User from '../database/models/userModel.js';
+import Post from '../database/models/postModel.js';
+import Comment from '../database/models/commentModel.js';
 import bcrypt from "bcrypt";
-import { resourceExists, checkResourceId } from "./middleware/resourceMiddleware.js";
+import { resourceExists } from "./middleware/resourceMiddleware.js";
 import { authenticate, authorize } from './middleware/authMiddleware.js';
 
 const usersRouter = express.Router();
@@ -34,13 +37,37 @@ usersRouter.post("/", function(req, res, next) {
 });
 
 // Get a user by id 
-usersRouter.get("/:id", function (req, res, next) {
-  User.findById(req.params.id).exec(function(err, user) {
+usersRouter.get("/:id", resourceExists(User), authenticate, function (req, res, next) {
+  // add number of posts posted by the user
+  User.aggregate([
+    {
+      $match: { _id: mongoose.Types.ObjectId(req.params.id) }
+    },
+    {
+      $lookup: {
+        from: 'posts',
+        localField: '_id',
+        foreignField: 'userId',
+        as: 'postedPosts'
+      }
+    },
+    { 
+      $unwind: '$postedPosts'
+    },
+    {
+      $group: {
+        _id: '$_id',
+        username: { $first: '$username' },
+        registrationDate: { $first: '$registrationDate'},
+        postedPosts: { $sum: 1 }
+      }
+    }
+  ], function (err, result) {
     if (err) {
       return next(err);
     }
-    res.send(user);
-  });
+    res.send(result)
+  })
 });
 
 // modify a user 
@@ -62,8 +89,17 @@ usersRouter.patch('/:id', resourceExists(User) , authenticate, authorize, async 
 usersRouter.delete('/:id', resourceExists(User), authenticate, authorize, async function (req, res, next) {
 
   try {
-    const DeletedUser = await User.findByIdAndDelete(req.params.id)
-    res.send(DeletedUser)
+    // first find all posts related to the user to delete
+    const relatedPosts = await Post.find({ userId: req.params.id })
+    // delete all comments related to the posts
+    for (const post of relatedPosts) {
+      await Comment.deleteMany({postId: post.id})
+    }
+    // then delete the posts
+    await Post.deleteMany({userId: req.params.id})
+    // finally delete the user
+    const deletedUser = await User.findByIdAndDelete(req.params.id)
+    res.send(deletedUser)
   
   } catch(err) {
     res.status(500).send(err)
