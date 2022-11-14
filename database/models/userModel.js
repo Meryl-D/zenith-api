@@ -13,7 +13,7 @@ const userSchema = new Schema({
         type: String, // Type validation
         required: true, // Mandatory
     },
-    registrationDate: { type: Date, required: true, default: new Date() }, // Default value
+    registrationDate: { type: Date, required: true, default: Date.now }, // Default value
 });
 
 // hide password hash to API users
