@@ -1,7 +1,8 @@
 import express from "express";
+import mongoose from "mongoose";
 import User from '../database/models/userModel.js';
 import bcrypt from "bcrypt";
-import { resourceExists, checkResourceId } from "./middleware/resourceMiddleware.js";
+import { resourceExists } from "./middleware/resourceMiddleware.js";
 import { authenticate, authorize } from './middleware/authMiddleware.js';
 
 const usersRouter = express.Router();
@@ -34,13 +35,37 @@ usersRouter.post("/", function(req, res, next) {
 });
 
 // Get a user by id 
-usersRouter.get("/:id", function (req, res, next) {
-  User.findById(req.params.id).exec(function(err, user) {
+usersRouter.get("/:id", resourceExists(User), authenticate, function (req, res, next) {
+  // add number of posts posted by the user
+  User.aggregate([
+    {
+      $match: { _id: mongoose.Types.ObjectId(req.params.id) }
+    },
+    {
+      $lookup: {
+        from: 'posts',
+        localField: '_id',
+        foreignField: 'userId',
+        as: 'postedPosts'
+      }
+    },
+    { 
+      $unwind: '$postedPosts'
+    },
+    {
+      $group: {
+        _id: '$_id',
+        username: { $first: '$username' },
+        registrationDate: { $first: '$registrationDate'},
+        postedPosts: { $sum: 1 }
+      }
+    }
+  ], function (err, result) {
     if (err) {
       return next(err);
     }
-    res.send(user);
-  });
+    res.send(result)
+  })
 });
 
 // modify a user 
