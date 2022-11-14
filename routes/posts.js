@@ -1,11 +1,13 @@
 import express from "express";
 import * as fs from 'fs';
 import multer from "multer";
+import User from '../database/models/userModel.js';
 import Post from '../database/models/postModel.js';
 import Comment from '../database/models/commentModel.js';
 import { resourceExists, checkResourceId } from "./middleware/resourceMiddleware.js";
 import { upload } from "./middleware/imageMiddleware.js"
 import { authenticate, authorize } from './middleware/authMiddleware.js';
+import { broadcastMessage } from '../ws.js';
 
 const postsRouter = express.Router()
 
@@ -37,27 +39,46 @@ postsRouter.get("/", authenticate, function (req, res, next) {
   })
 })
 
+
 /* GET comments listing for a post */
 postsRouter.get('/:id/comments', resourceExists(Post), authenticate, function (req, res, next) {
 
-  let query = Comment.find()
+  Comment.find().count(function (err, total) {
+    if (err) { return next(err); };
 
-  // Filter comments only for the current post
-  query = query.where('postId').equals(req.params.id)
-  query = query.populate('userId')
-  query.sort({ creationDate: 'desc' })
+    let query = Comment.find();
 
-  // Execute the query
-  query.exec(function (err, comments) {
-    if (err) {
-      return next(err)
-    }
-    res.send(comments)
+    // Filter comments only for the current post
+    query = query.where('postId').equals(req.params.id)
+    query = query.populate('postId').populate('userId')
+    query.sort({ creationDate: 'desc' })
+
+    // Parse the "page" param (default to 1 if invalid)
+    let page = parseInt(req.query.page, 10);
+    if (isNaN(page) || page < 1) { page = 1 }
+    // Parse the "pageSize" param (default to 10 if invalid)
+    let pageSize = parseInt(req.query.pageSize, 3);
+    if (isNaN(pageSize) || pageSize < 0 || pageSize > 10) { pageSize = 10 }
+    // Apply skip and limit to select the correct page of elements
+    query = query.skip((page - 1) * pageSize).limit(pageSize);
+
+    // Execute the query
+    query.exec(function (err, comments) {
+      if (err) {
+        return next(err)
+      }
+      res.send({
+        page: page,
+        pageSize: pageSize,
+        total: total,
+        data: comments
+      });
+    })
   })
 })
 
 /* POST a new post */
-postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'), function (req, res, next) {
+postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'),async function (req, res, next) {
 
   if (req.fileFormatError) return res.send(req.fileFormatError);
   req.body._id = req.resourceId
@@ -72,6 +93,7 @@ postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'), f
       ext: ext[1]
     }
   }
+  const postingUser = await User.findById(req.body.userId);
   // Create a new document from the JSON in the request body
   const newPost = new Post(req.body)
   // Save that document
@@ -81,7 +103,10 @@ postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'), f
     }
     // Send the saved document in the response
     res.send(savedPost)
+    // Broadcast the new post to all connected clients
+    broadcastMessage({ event: 'New post by', username: postingUser.username })
   });
+
 });
 
 /* POST a new comment for a specific post */
@@ -89,6 +114,7 @@ postsRouter.post('/:id/comments', resourceExists(Post), authenticate, function (
 
   req.body.userId = req.currentUserId
   req.body.postId = req.params.id
+  const postingUser = User.findById(req.body.userId);
   req.body.visitDate = new Date(req.body.visitDate)
 
   // Create a new document from the JSON in the request body
@@ -100,6 +126,8 @@ postsRouter.post('/:id/comments', resourceExists(Post), authenticate, function (
     }
     // Send the saved document in the response
     res.send(savedComment);
+    // Broadcast the new comment to all connected clients
+    broadcastMessage({ event: 'New comment on your post', username: postingUser.username })
   });
 });
 
@@ -129,7 +157,7 @@ postsRouter.delete("/:id", resourceExists(Post), authenticate, authorize, async 
   try {
     // delete all the comments of the post first
     await Comment.deleteMany({ postId: req.params.id })
-    
+
     // then delete the post itself
     const deletedPost = await Post.findByIdAndDelete(req.params.id)
 
@@ -145,5 +173,6 @@ postsRouter.delete("/:id", resourceExists(Post), authenticate, authorize, async 
     res.status(500).send(err)
   }
 });
+
 
 export default postsRouter;

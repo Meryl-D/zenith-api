@@ -7,6 +7,7 @@
 import app from "../app.js";
 import createDebugger from "debug";
 import http from "http";
+import { createWebSocketServer } from '../ws.js';
 
 const debug = createDebugger('projet:server')
 /**
@@ -21,6 +22,10 @@ app.set("port", port);
  */
 
 const server = http.createServer(app);
+/**
+ * Create HTTP & WebSocket servers.
+ */
+createWebSocketServer(server);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -85,3 +90,5 @@ function onListening() {
   const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
 }
+
+

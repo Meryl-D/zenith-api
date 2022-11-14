@@ -3,6 +3,7 @@
       "app.js",
       "bin/start.js",
       "routes/**/*",
-      "openapi.yml"
+      "openapi.yml",
+      "ws.js"
     ]
 }
