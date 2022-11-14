@@ -14,16 +14,17 @@ const multerStorage = multer.diskStorage({
 
 const multerFilter = function (req, file, cb) {
     // Check file format
-    if (file.mimetype !== 'image/png' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/jpg') {
-        req.fileFormatError = 'Invalid file format';
-        return cb(null, false, new Error('Invalid file format'));
+    if (file.mimetype !== 'image/jpeg') {
+        req.fileFormatError = 'Invalid file format. Must be .jpg';
+        return cb(null, false, new Error('Invalid file format. Must be .jpg'));
     }
     cb(null, true)
 }
 
 const upload = multer({
     storage: multerStorage,
-    fileFilter: multerFilter
+    fileFilter: multerFilter,
+    limits: { fileSize: 31457280 }
 })
 
 export { upload }

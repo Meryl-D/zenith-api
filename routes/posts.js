@@ -14,8 +14,19 @@ postsRouter.get("/", authenticate, function (req, res, next) {
 
   let query = Post.find()
 
-  // Filter comments that are either the users own or set to visible by others
-  query = query.where({ visible: true }).or({ _id: req.userId })
+  if (req.query?.others) {
+    // Show only the users posts
+    query = query.where({userId: req.currentUserId})
+  } else {
+    // Filter posts that are either the users own or set to visible by others
+    query = query.or([{ visible: true }, { userId: req.currentUserId }])
+  }
+  if (req.query?.from && req.query?.to) {
+    console.log('date query')
+    const from = new Date(`${req.query.from}T00:00:00`)
+    const to = new Date(`${req.query.to}T23:59:59`)
+    query = query.where('visitDate').gte(from).lte(to)
+  }
   query = query.populate('userId')
   query.sort({ creationDate: 'desc' })
 
