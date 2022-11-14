@@ -11,6 +11,9 @@ mongoose.Promise = Promise;
 mongoose.connect(process.env.DATABASE_URL || 'mongodb://127.0.0.1/zenith');
 
 const app = express();
+import fs from 'fs';
+import yaml from 'js-yaml';
+import swaggerUi from 'swagger-ui-express';
 
 app.use(logger("dev"));
 app.use(express.json());
