@@ -6,15 +6,18 @@ import usersRouter from "./routes/users.js";
 import postsRouter from "./routes/posts.js";
 import commentsRouter from "./routes/comments.js";
 import authRouter from "./routes/auth.js";
+import fs from 'fs';
+import yaml from 'js-yaml';
+import swaggerUi from 'swagger-ui-express';
 
 mongoose.Promise = Promise;
 mongoose.connect(process.env.DATABASE_URL || 'mongodb://127.0.0.1/zenith');
 
 const app = express();
-import fs from 'fs';
-import yaml from 'js-yaml';
-import swaggerUi from 'swagger-ui-express';
-
+// Parse the OpenAPI document.
+const openApiDocument = yaml.load(fs.readFileSync('./openapi.yml'));
+// Serve the Swagger UI documentation.
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
