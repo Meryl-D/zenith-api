@@ -9,6 +9,13 @@ info:
     You can now help us improve the API whether it's by making changes to the definition itself or to the code.
     That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
     
+    During the last year of our bachelor's degree in media engineering at the HEIG-VD, the ArchiOWeb course required the development of a basic API as a project. This project gave us a different perspective from the frontend programming, which we were taught in more depth.
+    
+    Authors:
+    - Meryl Dubois
+    - Clarisse Gagnebin
+    - Jasmine Molano Correia
+    
     Some useful links:
     - [The project's repository](https://github.com/Meryl-D/zenith)
     - [The source API definition for the project](https://github.com/Meryl-D/zenith/blob/main/openapi.yml)
