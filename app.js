@@ -18,7 +18,11 @@ const app = express();
 const openApiDocument = yaml.load(fs.readFileSync('./openapi.yml'));
 // Serve the Swagger UI documentation.
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
-app.use(logger("dev"));
+
+// Log requests (except in test mode).
+if (process.env.NODE_ENV !== 'test') {
+  app.use(logger('dev'));
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
