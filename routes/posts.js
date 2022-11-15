@@ -126,7 +126,7 @@ postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'), a
     // Send the saved document in the response
     res.send(savedPost)
     // Broadcast the new post to all connected clients
-    broadcastMessage({ event: 'New post by', username: postingUser.username })
+    broadcastMessage({ username: postingUser.username, event: 'posted a new post' })
   });
 
 });
@@ -150,8 +150,9 @@ postsRouter.post('/:id/comments', resourceExists(Post), authenticate, async func
     }
     // Send the saved document in the response
     res.send(savedComment);
+
     // Broadcast the new comment to all connected clients
-    broadcastMessage({ event: 'New comment on your post', username: postingUser.username })
+    broadcastMessage({username: postingUser.username, event: 'comented on the post',  post: req.body.postId })
   });
 });
 
