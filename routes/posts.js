@@ -104,17 +104,17 @@ postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'),as
     // Send the saved document in the response
     res.send(savedPost)
     // Broadcast the new post to all connected clients
-    broadcastMessage({ event: 'New post by', username: postingUser.username })
+    broadcastMessage({ username: postingUser.username, event: 'posted a new post' })
   });
 
 });
 
 /* POST a new comment for a specific post */
-postsRouter.post('/:id/comments', resourceExists(Post), authenticate, function (req, res, next) {
+postsRouter.post('/:id/comments', resourceExists(Post), authenticate,async function (req, res, next) {
 
   req.body.userId = req.currentUserId
   req.body.postId = req.params.id
-  const postingUser = User.findById(req.body.userId);
+  const postingUser =await User.findById(req.body.userId);
   req.body.visitDate = new Date(req.body.visitDate)
 
   // Create a new document from the JSON in the request body
@@ -126,8 +126,9 @@ postsRouter.post('/:id/comments', resourceExists(Post), authenticate, function (
     }
     // Send the saved document in the response
     res.send(savedComment);
+
     // Broadcast the new comment to all connected clients
-    broadcastMessage({ event: 'New comment on your post', username: postingUser.username })
+    broadcastMessage({username: postingUser.username, event: 'comented on the post',  post: req.body.postId })
   });
 });
 
