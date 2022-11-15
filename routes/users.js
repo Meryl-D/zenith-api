@@ -9,10 +9,6 @@ import { authenticate, authorize } from './middleware/authMiddleware.js';
 
 const usersRouter = express.Router();
 
-usersRouter.get("/", function (req, res, next) {
-  res.send("Got a response from the users route");
-});
-
 // add a user to the database
 usersRouter.post("/", function(req, res, next) {
   // create hashedPassword
@@ -77,7 +73,6 @@ usersRouter.patch('/:id', resourceExists(User) , authenticate, authorize, async 
     // Update an entry for a selected user
     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true })
     // Send the updated user in the response if the user id is valid
-    if (!updatedUser) res.status(404).send('User not found')
     res.send(updatedUser)
   
   } catch(err) {

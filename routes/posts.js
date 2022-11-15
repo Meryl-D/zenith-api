@@ -18,7 +18,7 @@ postsRouter.get("/", authenticate, function (req, res, next) {
 
   if (req.query?.others) {
     // Show only the users posts
-    query = query.where({userId: req.currentUserId})
+    query = query.where({ userId: req.currentUserId })
   } else {
     // Filter posts that are either the users own or set to visible by others
     query = query.or([{ visible: true }, { userId: req.currentUserId }])
@@ -39,18 +39,38 @@ postsRouter.get("/", authenticate, function (req, res, next) {
   })
 })
 
+/* GET a specific post*/
+postsRouter.get('/:id', resourceExists(Post), authenticate, function (req, res, next) {
 
-/* GET comments listing for a post */
+  Comment.find({ postId: req.params.id }).countDocuments(function (err, count) {
+    if (err) return next(err)
+
+    let query = Post.findById(req.params.id).populate('userId')
+
+    query.exec(function (err, post) {
+      if (err) {
+        return next(err)
+      }
+      res.send({
+        post: post,
+        totalComments: count
+      })
+    })
+
+  })
+})
+
+/* GET comments by batch (pages)*/
 postsRouter.get('/:id/comments', resourceExists(Post), authenticate, function (req, res, next) {
 
   Comment.find().count(function (err, total) {
-    if (err) { return next(err); };
+    if (err) return next(err)
 
-    let query = Comment.find();
+    let query = Comment.find()
 
     // Filter comments only for the current post
     query = query.where('postId').equals(req.params.id)
-    query = query.populate('postId').populate('userId')
+    query = query.populate('userId')
     query.sort({ creationDate: 'desc' })
 
     // Parse the "page" param (default to 1 if invalid)
@@ -78,9 +98,9 @@ postsRouter.get('/:id/comments', resourceExists(Post), authenticate, function (r
 })
 
 /* POST a new post */
-postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'),async function (req, res, next) {
+postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'), async function (req, res, next) {
 
-  if (req.fileFormatError) return res.send(req.fileFormatError);
+  if (req.fileFormatError) return res.send(req.fileFormatError)
   req.body._id = req.resourceId
   req.body.userId = req.currentUserId
   req.body.visitDate = new Date(req.body.visitDate)
@@ -94,6 +114,8 @@ postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'),as
     }
   }
   const postingUser = await User.findById(req.body.userId);
+  if (!postingUser) return res.status(404).send('Creator not found')
+
   // Create a new document from the JSON in the request body
   const newPost = new Post(req.body)
   // Save that document
@@ -110,12 +132,14 @@ postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'),as
 });
 
 /* POST a new comment for a specific post */
-postsRouter.post('/:id/comments', resourceExists(Post), authenticate, function (req, res, next) {
+postsRouter.post('/:id/comments', resourceExists(Post), authenticate, async function (req, res, next) {
 
   req.body.userId = req.currentUserId
   req.body.postId = req.params.id
-  const postingUser = User.findById(req.body.userId);
   req.body.visitDate = new Date(req.body.visitDate)
+
+  const postingUser = await User.findById(req.body.userId)
+  if (!postingUser) return res.status(404).send('Creator not found')
 
   // Create a new document from the JSON in the request body
   const newComment = new Comment(req.body);

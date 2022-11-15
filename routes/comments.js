@@ -11,8 +11,6 @@ commentsRouter.patch('/:id', resourceExists(Comment), authenticate, authorize, a
 
   try {
     const updatedComment = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    
-    if (!updatedComment) res.status(404).send('Updated comment not found')
     res.send(updatedComment)
   
   } catch(err) {
