@@ -53,10 +53,10 @@ postsRouter.get('/:id', resourceExists(Post), authenticate, function (req, res, 
       }
       res.send({
         post: post,
-        totalComments: count
+        totalComments: count,
+        // Broadcast the new post to all connected clients
+        message: broadcastMessage({ totalComments: count, event: 'comments on this post' })
       })
-      // Broadcast the new post to all connected clients
-      broadcastMessage({ totalComments: count, event: 'comments on this post' })
     })
 
   })
