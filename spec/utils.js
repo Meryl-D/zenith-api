@@ -24,12 +24,5 @@ export function generateValidJwt(user) {
 }
 
 export function createUser() {
-  let john
-  beforeEach(async function () {
-      // Create a user before retrieving the list.
-      [john] = await Promise.all([
-          User.create({ username: 'john', password: 'doe' }),
-      ])
-  })
-  return john
+
 }
