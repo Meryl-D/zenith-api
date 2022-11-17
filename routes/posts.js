@@ -53,7 +53,9 @@ postsRouter.get('/:id', resourceExists(Post), authenticate, function (req, res, 
       }
       res.send({
         post: post,
-        totalComments: count
+        totalComments: count,
+        // Broadcast the new post to all connected clients
+        message: broadcastMessage({ totalComments: count, event: 'comments on this post' })
       })
     })
 
@@ -150,9 +152,6 @@ postsRouter.post('/:id/comments', resourceExists(Post), authenticate, async func
     }
     // Send the saved document in the response
     res.send(savedComment);
-
-    // Broadcast the new comment to all connected clients
-    broadcastMessage({username: postingUser.username, event: 'comented on the post',  post: req.body.postId })
   });
 });
 
