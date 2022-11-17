@@ -15,12 +15,12 @@ const postSchema = new Schema({
   location: {
     type: {
       type: String,
-      // required: true,
+      required: true,
       enum: ['Point']
     },
     coordinates: {
       type: [Number],
-      // required: true,
+      required: true,
       validate: {
         validator: validateGeoJsonCoordinates,
         message: '{VALUE} is not a valid longitude/latitude(/altitude) coordinates array'
