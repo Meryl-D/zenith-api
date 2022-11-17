@@ -3,7 +3,7 @@ import app from "../app.js"
 import mongoose from "mongoose"
 import { cleanUpDatabase } from "./utils.js"
 
-beforeEach(cleanUpDatabase);
+beforeEach(cleanUpDatabase)
 
 describe('POST /users', function () {
     it('should create a user', async function () {
@@ -14,14 +14,17 @@ describe('POST /users', function () {
                 password: 'toudoum'
             })
             .expect(200)
-            .expect('Content-Type', /json/);
-    });
-});
+            .expect('Content-Type', /json/)
 
-// describe('GET /users', function () {
-//     test.todo('should retrieve the list of users');
-// });
+        // Check that the response body is a JSON object with exactly the properties we expect.
+        expect(res.body).toBeObject()
+        expect(res.body._id).toBeString()
+        expect(res.body.username).toEqual('netflix')
+        expect(res.body.registrationDate).toBeString()
+        expect(res.body).toContainAllKeys(['_id', 'username', 'registrationDate', '__v'])
+    })
+})
 
 afterAll(async () => {
-    await mongoose.disconnect();
-  });
+    await mongoose.disconnect()
+})

@@ -5,6 +5,7 @@ import { authenticate, authorize } from './middleware/authMiddleware.js';
 
 const commentsRouter = express.Router();
 
+/** UPDATE a comment */
 commentsRouter.patch('/:id', resourceExists(Comment), authenticate, authorize, async function (req, res, next) {
 
   req.body.modificationDate = new Date()
@@ -18,6 +19,7 @@ commentsRouter.patch('/:id', resourceExists(Comment), authenticate, authorize, a
   }
 })
 
+/** DELETE a comment */
 commentsRouter.delete('/:id', resourceExists(Comment), authenticate, authorize, async function (req, res, next) {
 
   try {

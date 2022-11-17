@@ -156,6 +156,7 @@ postsRouter.post('/:id/comments', resourceExists(Post), authenticate, async func
   });
 });
 
+/** UPDATE a post */
 postsRouter.patch("/:id", resourceExists(Post), authenticate, authorize, checkResourceId, upload.single('picture'),
   async function (req, res, next) {
     try {
@@ -178,6 +179,7 @@ postsRouter.patch("/:id", resourceExists(Post), authenticate, authorize, checkRe
     }
   });
 
+/** DELETE a post and its comments */
 postsRouter.delete("/:id", resourceExists(Post), authenticate, authorize, async function (req, res, next) {
   try {
     // delete all the comments of the post first

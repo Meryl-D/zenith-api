@@ -1,7 +1,7 @@
 import User from "../../database/models/userModel.js"
 import jwt from "jsonwebtoken";
 
-const secretKey = process.env.SECRET_KEY || "UqFj3LgP18YPI5Qc";
+const secretKey = process.env.SECRET_KEY || "changeme";
 
 function authenticate(req, res, next) {
   // Ensure the header is present.
@@ -15,7 +15,7 @@ function authenticate(req, res, next) {
     return res.status(401).send("Authorization header is not a bearer token")
   }
   // Extract and verify the JWT.
-  const token = match[1];
+  const token = match[1]
   jwt.verify(token, secretKey, function(err, payload) {
     if (err) {
       return res.status(401).send("Your token is invalid or has expired")

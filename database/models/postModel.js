@@ -31,7 +31,7 @@ const postSchema = new Schema({
     type: String,
     minLenght: [2, 'Description is too short'],
     maxLength: [200, 'Description cannot exceed 200 characters'],
-    // required: true,
+    required: true,
   },
   creationDate: {
     type: Date,
