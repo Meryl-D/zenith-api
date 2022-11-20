@@ -17,3 +17,28 @@ Zenith's databse contains 3 collections
     
       npm install
 
+## WebSocket API documentation
+
+WebSocket enables two-way communication between a client and a remote host. In Zenith WS is used to signal all users when a new post is posted, and to signal a user when there is a new comment under his post in real time.
+
+Install WS npm package with the following command
+
+      npm install ws
+      
+Then you will need to create a file ws.js. This is where the WebSocket server will accept connections from clients, it listens on port 3000 th same as the app. Once the WS server accepts commection from the client, you can send a message, and listen for client messages.
+ 
+ 
+      import { WebSocketServer } from 'ws';
+      // Create a WebSocket server that will accept connections on port 3000.
+        const wss = new WebSocketServer({
+        port: 3000
+      });
+      // Listen for client connections.
+      wss.on('connection', function connection(ws) {
+        // Listen for messages from the client once it has connected.
+          ws.on('message', function incoming(message) {
+          console.log('received: %s', message);
+      });
+        // Send something to the client.
+        ws.send('something');
+      });
