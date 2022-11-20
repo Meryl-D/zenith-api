@@ -54,8 +54,8 @@ postsRouter.get('/:id', resourceExists(Post), authenticate, function (req, res, 
       res.send({
         post: post,
         totalComments: count,
-        // Broadcast the new post to all connected clients
-        message: broadcastMessage({ totalComments: count, event: 'comments on this post' })
+        // Showing the number of comments under a post
+        message: broadcastMessage({ totalComments: count, event: 'comments this your post' })
       })
     })
 
@@ -127,7 +127,7 @@ postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'), a
     }
     // Send the saved document in the response
     res.send(savedPost)
-    // Broadcast the new post to all connected clients
+    // Broadcast the new post to all connected users
     broadcastMessage({ username: postingUser.username, event: 'posted a new post' })
   });
 
