@@ -29,16 +29,19 @@ First you will need to create a file ws.js. This is where the WebSocket server w
  
  
       import { WebSocketServer } from 'ws';
+      
       // Create a WebSocket server that will accept connections on port 3000.
         const wss = new WebSocketServer({
         port: 3000
       });
+      
       // Listen for client connections.
       wss.on('connection', function connection(ws) {
         // Listen for messages from the client once it has connected.
           ws.on('message', function incoming(message) {
           console.log('received: %s', message);
       });
+      
         // Send something to the client.
         ws.send('something');
       });
@@ -48,20 +51,33 @@ Then in start.js you will need to create the WS server. The HTTP server as alrea
 	import { createWebSocketServer } from '../ws.js';
 
 	const debug = createDebugger('projet:server')
+	
 	/**
 	 * Get port from environment and store in Express.
 	 */
-	
 	const port = normalizePort(process.env.PORT || "3000");
 	app.set("port", port);
 	
 	/**
 	 * Create HTTP server.
 	 */
-	
 	const server = http.createServer(app);
+	
 	/**
  	* Create HTTP & WebSocket servers.
 	 */
-	 
 	createWebSocketServer(server);
+	
+Now that everything is implemented you can broadcast messages from any routes. For exemple in Zenith we notify every users when someone posts a new post.
+
+	import { broadcastMessage } from '../ws.js';
+
+	/* POST a new post */
+	postsRouter.post('/', authenticate, checkResourceId, upload.single('picture'), async function (req, res, next) {
+	/**
+ 		* ...
+	 */
+	 
+  	 // Broadcast the new post to all connected clients
+    	 broadcastMessage({ username: postingUser.username, event: 'posted a new post' })
+	});
