@@ -3,11 +3,11 @@ A basic REST API project
 
 Zenith is an app that lets you journal your travels and share them with other users.
 
- -  You can post places that you visited, with a picture, a descrption and a location.
+ -  You can post places that you visited, with a picture, a description and a location.
  -  Your posts can be private (only you can see them) or public (all Zenith users can see and comment on them)
  -  You can comment on other users posts.
  
-Zenith's databse contains 3 collections
+Zenith's database contains 3 collections
 
  - Users
  - Posts
@@ -25,7 +25,7 @@ Install WS npm package with the following command
 
       npm install ws
       
-First you will need to create a file ws.js. This is where the WebSocket server will accept connections from clients, it listens on port 3000 the same as the app. Once the WS server accepts commection from the client, you can send a message, and listen for client messages.
+First, you will need to create a file ws.js. This is where the WebSocket server will accept connections from clients, it listens on port 3000 the same as the app. Once the WS server accepts the connection from the client, you can send a message, and listen for client messages.
  
  
       import { WebSocketServer } from 'ws';
@@ -46,7 +46,7 @@ First you will need to create a file ws.js. This is where the WebSocket server w
         ws.send('something');
       });
 
-Then in start.js you will need to create the WS server. The HTTP server as already been created before, since the WS server listen on the same port as the HTTP server you will only need to import the createWebSocketServer function and pass the const serve in its parameters.
+Then in start.js you will need to create the WS server. The HTTP server as already been created before, since the WS server listen on the same port as the HTTP server, you will only need to import the createWebSocketServer function and pass the const serve in its parameters.
 
 	import { createWebSocketServer } from '../ws.js';
 
@@ -68,7 +68,7 @@ Then in start.js you will need to create the WS server. The HTTP server as alrea
 	 */
 	createWebSocketServer(server);
 	
-Now that everything is implemented you can broadcast messages from any routes. For exemple in Zenith we notify every users when someone posts a new post.
+Now that everything is implemented you can broadcast messages from any routes. For example, in Zenith we notify every user when someone posts a new post.
 
 	import { broadcastMessage } from '../ws.js';
 
