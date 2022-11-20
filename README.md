@@ -25,7 +25,7 @@ Install WS npm package with the following command
 
       npm install ws
       
-First you will need to create a file ws.js. This is where the WebSocket server will accept connections from clients, it listens on port 3000 th same as the app. Once the WS server accepts commection from the client, you can send a message, and listen for client messages.
+First you will need to create a file ws.js. This is where the WebSocket server will accept connections from clients, it listens on port 3000 the same as the app. Once the WS server accepts commection from the client, you can send a message, and listen for client messages.
  
  
       import { WebSocketServer } from 'ws';
@@ -43,7 +43,7 @@ First you will need to create a file ws.js. This is where the WebSocket server w
         ws.send('something');
       });
 
-Then in start.js you will need to create the WS server.
+Then in start.js you will need to create the WS server. The HTTP server as already been created before, since the WS server listen on the same port as the HTTP server you will only need to import the createWebSocketServer function and pass the const serve in its parameters.
 
 	import { createWebSocketServer } from '../ws.js';
 
