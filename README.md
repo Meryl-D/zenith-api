@@ -78,6 +78,6 @@ Now that everything is implemented you can broadcast messages from any routes. F
  		* ...
 	 */
 	 
-  	 // Broadcast the new post to all connected clients
-    	 broadcastMessage({ username: postingUser.username, event: 'posted a new post' })
+  	 // Broadcast the new post to all connected users
+     broadcastMessage({ username: postingUser.username, event: 'posted a new post' })
 	});
