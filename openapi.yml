@@ -27,8 +27,9 @@ info:
 externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
-#servers:
-  #- url: https://petstore3.swagger.io/api/v3
+servers:
+  - url: https://zenith.onrender.com/
+  - url: http://localhost:3000/
 tags:
   - name: comment
     description: Everything about comments
@@ -93,7 +94,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Comment'          
+                $ref: '#/components/schemas/Comment' 
+
   /users:
     post:
       tags:
@@ -120,7 +122,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'   
+                $ref: '#/components/schemas/User' 
+
   /users/{userId}:
     patch:
       tags:
@@ -176,7 +179,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User' 
-    
     delete:
       tags:
         - user
@@ -198,6 +200,7 @@ paths:
           schema:
             type: integer
             format: int64
+
   /posts:
     get:
       tags:
@@ -216,6 +219,7 @@ paths:
           description: Unauthorized
         '404':
           description: Page not found
+
   /posts/{postId}:
     post:
       tags:
@@ -292,6 +296,7 @@ paths:
           schema:
             type: integer
             format: int64
+
   /posts/{postId}/comments:
     get:
       tags:
@@ -387,7 +392,7 @@ paths:
                 type: string
         '400':
           description: Invalid username/password supplied
-          
+
 components:
   schemas:
     User:
@@ -410,6 +415,7 @@ components:
         - id
         - username
         - password
+
     Post:
       type: object
       properties:
@@ -457,6 +463,7 @@ components:
         - location
         - description
         - visible
+        
     Comment:
       type: object
       properties:
