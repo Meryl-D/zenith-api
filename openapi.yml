@@ -36,7 +36,7 @@ tags:
       description: Find out more
       url: http://swagger.io
   - name: user
-    description: Operations about user
+    description: Operations on users
   - name: post
     description: Publications that users post on Zenith
   - name: auth
@@ -46,8 +46,8 @@ paths:
     patch:
       tags:
         - comment
-      summary: Update comment by ID
-      description: Update partially an existing comment under a post by its id
+      summary: Update a comment by ID
+      description: Partially update an existing comment under a post by its ID. Requires to be logged in and can only be done by the user who created it.
       operationId: updateComment
       parameters:
         - name: commentId
@@ -79,7 +79,7 @@ paths:
       tags:
         - comment
       summary: Delete a comment by ID
-      description: Update an existing pet by Id
+      description: Delete a comment by its ID. Requires to be logged in and can only be done by the user who created it.
       operationId: deleteComment
       parameters:
         - name: commentId
@@ -101,7 +101,7 @@ paths:
       tags:
         - user
       summary: Create a user
-      description: This can only be done by the logged in user
+      description: Create a new user.
       operationId: postUser
       parameters:
         - name: username
@@ -127,8 +127,8 @@ paths:
     patch:
       tags:
         - user
-      summary: Update users by ID
-      description: Modify a user by user id
+      summary: Update a user by ID
+      description: Partially modify a user by its ID. Requires to be logged in and can only be done by oneself.
       operationId: patchUser
       parameters:
         - name: userId
@@ -148,8 +148,8 @@ paths:
     get:
       tags:
         - user
-      summary: Get a user by user id
-      description: Get a user by user id
+      summary: Get a user by ID
+      description: Get a user by its ID. Requires to be logged in.
       operationId: getUserById
       parameters:
         - name: userId
@@ -171,7 +171,7 @@ paths:
       tags:
         - user
       summary: Delete a user by ID
-      description: Delete a user by user ID
+      description: Delete a user by its ID. Requires to be logged in and can only be done by oneself. This action also deletes all the posts created by the user and the comments under these posts.
       operationId: deleteUser
       responses:
         '200':
@@ -193,7 +193,7 @@ paths:
       tags:
         - post
       summary: Get all posts
-      description: Get all visible posts from any user
+      description: Get all visible posts from any user. Requires to be logged in.
       operationId: getPost
       responses:
         '200':
@@ -210,8 +210,8 @@ paths:
     post:
       tags:
         - post
-      summary: Post a new post
-      description: Post a new post on the map
+      summary: Create a new post
+      description: Create a new post on the map. Requires to be logged in.
       operationId: postPost
       parameters:
         - name: postId
@@ -235,8 +235,8 @@ paths:
     patch:
       tags:
         - post
-      summary: Modify posts infos
-      description: Modify partially posts informations by its ID
+      summary: Update a post
+      description: Partially modify a post by its ID. Requires to be logged in and can only be done by the user who created it.
       operationId: patchPost
       parameters:
         - name: postId
@@ -260,8 +260,8 @@ paths:
     delete:
       tags:
         - post
-      summary: Delete a post
-      description: Delete a post by its ID
+      summary: Delete a post by ID
+      description: Delete a post by its ID. Requires to be logged in and can only be done by the user who created it. This deletes also all the comments under the post.
       operationId: deletePost
       responses:
         '200':
@@ -287,7 +287,7 @@ paths:
       tags:
         - post
       summary: Get all comments under a post
-      description: Get all of the comments under a post by its id
+      description: Get all of the comments under a post. Requires the posts ID and to be logged in.
       operationId: postID
       parameters:
         - name: postId
@@ -312,7 +312,7 @@ paths:
       tags:
         - post
       summary: Create a new comment under a post
-      description: Post a new post on the map
+      description: Create a comment under a post. Requires the posts ID and to be logged in.
       operationId: postApost
       parameters:
         - name: postId
@@ -339,7 +339,7 @@ paths:
       tags:
         - auth
       summary: Logs user into the system
-      description: ''
+      description: Logs user into the system
       operationId: loginUser
       parameters:
         - name: username
