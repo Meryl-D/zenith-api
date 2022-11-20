@@ -46,7 +46,7 @@ First, you will need to create a file ws.js. This is where the WebSocket server 
         ws.send('something');
       });
 
-Then in start.js you will need to create the WS server. The HTTP server as already been created before, since the WS server listen on the same port as the HTTP server, you will only need to import the createWebSocketServer function and pass the const serve in its parameters.
+Then in start.js you will need to create the WS server. The HTTP server has already been created before, since the WS server listen on the same port as the HTTP server, you will only need to import the createWebSocketServer function and pass the const serve in its parameters.
 
 	import { createWebSocketServer } from '../ws.js';
 
