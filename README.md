@@ -19,7 +19,7 @@ Zenith's databse contains 3 collections
 
 ## WebSocket API documentation
 
-WebSocket enables two-way communication between a client and a remote host. In Zenith WS is used to signal all users when a new post is posted, and to signal a user when there is a new comment under his post in real time.
+WebSocket enables two-way communication between a client and a remote host. In Zenith WS is used to signal all users when a new post is posted, and to count all the comments under a post in real time.
 
 Install WS npm package with the following command
 
