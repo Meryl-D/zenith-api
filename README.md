@@ -60,7 +60,8 @@ Then in start.js you will need to create the WS server.
 	 */
 	
 	const server = http.createServer(app);
-		/**
- * Create HTTP & WebSocket servers.
+	/**
+ 	* Create HTTP & WebSocket servers.
 	 */
+	 
 	createWebSocketServer(server);
