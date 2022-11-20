@@ -1,4 +1,3 @@
-#swagger: "2.0"
 openapi: 3.0.3
 info:
   title: Swagger Zenith - OpenAPI
@@ -20,9 +19,7 @@ info:
     - [The project's repository](https://github.com/Meryl-D/zenith)
     - [The project deployed on Render](https://zenith.onrender.com)
     - [The source API definition for the project](https://github.com/Meryl-D/zenith/blob/main/openapi.yml)
-  #termsOfService: http://swagger.io/terms/
-  #contact:
-    #email: zenith@heig-vd.ch
+  termsOfService: http://swagger.io/terms/
   #license:
     #name: Apache 2.0
     #url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -205,6 +202,10 @@ paths:
             application/json:
               schema:
                 $ref: '#'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Page not found
   /posts/{postId}:
     post:
       tags:
@@ -226,7 +227,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#'   
+                $ref: '#'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Page not found
     patch:
       tags:
         - post
@@ -247,7 +252,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#'   
+                $ref: '#'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Page not found
     delete:
       tags:
         - post
@@ -260,7 +269,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#' 
+                $ref: '#'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Page not found
       parameters:
         - name: postId
           in: path
@@ -290,8 +303,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#'   
-  
+                $ref: '#' 
+        '401':
+          description: Unauthorized
+        '404':
+          description: Page not found
     post:
       tags:
         - post
@@ -312,7 +328,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#'   
+                $ref: '#' 
+        '401':
+          description: Unauthorized
+        '404':
+          description: Page not found
   
   /auth/login:
     get:
@@ -376,4 +396,53 @@ components:
         registrationDate:
           type: string
           format: date
-          
+      required:
+        - id
+        - username
+        - password
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1a34f32bcgh38g'
+        description:
+          type: string
+          example: 'a full and usefull description'
+        publicationDate:
+          type: string
+          format: date
+        visitDate:
+          type: string
+          format: date
+        modificationDate:
+          type: string
+          format: date
+        image:
+          type: string
+          example: 'https://link-to-the-image.ch/image.jpg'
+        location:
+          type: string
+          example: 'Avenue des Sports 20, Yverdon-les-Bains'
+      required:
+        - id
+        - publicationDate
+        - image
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1a34f32bcgh38g'
+        description:
+          type: string
+          example: 'a full and usefull description'
+        creationDate:
+          type: string
+          format: date
+        modificationDate:
+          type: string
+          format: date
+      required: 
+        - id
+        - creationDate
