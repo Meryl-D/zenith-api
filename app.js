@@ -1,6 +1,7 @@
 import express from "express";
 import logger from "morgan";
 import mongoose from 'mongoose';
+import createError from "http-errors";
 import indexRouter from "./routes/index.js";
 import usersRouter from "./routes/users.js";
 import postsRouter from "./routes/posts.js";
