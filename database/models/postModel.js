@@ -7,9 +7,11 @@ const postSchema = new Schema({
   picture: {
     url: {
       type: String,
+      required: true,
     },
     ext: {
-      type: String
+      type: String,
+      required: true,
     }
   },
   location: {
@@ -35,7 +37,7 @@ const postSchema = new Schema({
   },
   creationDate: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   visitDate: {
     type: Date,
@@ -47,11 +49,12 @@ const postSchema = new Schema({
   },
   modificationDate: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   visible: {
     type: Boolean,
-    default: false
+    default: false,
+    required: true
   },
   userId: {
     type: Schema.Types.ObjectId,
