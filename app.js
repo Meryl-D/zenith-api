@@ -10,11 +10,13 @@ import authRouter from "./routes/auth.js";
 import fs from 'fs';
 import yaml from 'js-yaml';
 import swaggerUi from 'swagger-ui-express';
+import cors from 'cors';
 
 mongoose.Promise = Promise;
 mongoose.connect(process.env.DATABASE_URL || 'mongodb://127.0.0.1/zenith');
 
 const app = express();
+app.use(cors());
 // Parse the OpenAPI document.
 const openApiDocument = yaml.load(fs.readFileSync('./openapi.yml'));
 // Serve the Swagger UI documentation.
