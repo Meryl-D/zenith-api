@@ -11,7 +11,7 @@ const postSchema = new Schema({
     },
     ext: {
       type: String,
-      required: true,
+      required: false,
     }
   },
   location: {
